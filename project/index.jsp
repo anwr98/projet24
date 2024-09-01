@@ -1,4 +1,4 @@
-
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,15 +13,15 @@
     <!-- Header -->
     <header>
         <div id="logo-container">
-            <img src="images/logo.png" alt="Courses Online" id="logo" onclick="location.href='index.html';">
+            <img src="images/logo.png" alt="Courses Online" id="logo" onclick="location.href='index.jsp';">
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#about">About Us</a></li>
-                <li><a href="index.html#courses">Our Courses</a></li>
-                <li><a href="index.html#contact">Contact Us</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li><a href="index.jsp">Home</a></li>
+                <li><a href="index.jsp#about">About Us</a></li>
+                <li><a href="index.jsp#courses">Our Courses</a></li>
+                <li><a href="index.jsp#contact">Contact Us</a></li>
+                <li><a href="login.jsp">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -42,30 +42,29 @@
 <section id="courses">
     <h2>Our Courses</h2>
     <div class="course-list">
+        <%
+            // Establish database connection
+            try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
+                 Statement stmt = con.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT course_name, image_path FROM courses")) {
+
+                // Iterate through the result set to display each course
+                while (rs.next()) {
+                    String courseName = rs.getString("course_name");
+                    String imagePath = rs.getString("image_path");
+        %>
         <div class="course-item">
-            <a href="html-tutors.jsp">
-                <img src="images/html.png" alt="HTML">
-                <p>HTML</p>
+            <a href="<%=courseName.toLowerCase()%>-tutors.jsp">
+                <img src="<%=imagePath%>" alt="<%=courseName%>">
+                <p><%=courseName%></p>
             </a>
         </div>
-        <div class="course-item">
-            <a href="javascript-tutors.jsp">
-                <img src="images/javascript.png" alt="JavaScript">
-                <p>JavaScript</p>
-            </a>
-        </div>
-        <div class="course-item">
-            <a href="css-tutors.jsp">
-                <img src="images/css.png" alt="CSS">
-                <p>CSS</p>
-            </a>
-        </div>
-        <div class="course-item">
-            <a href="jquery-tutors.jsp">
-                <img src="images/jquery.png" alt="jQuery">
-                <p>jQuery</p>
-            </a>
-        </div>
+        <%
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        %>
     </div>
 </section>
 
@@ -84,10 +83,20 @@
 
         <label for="course">Select a Course:</label>
         <select id="course" name="course" required>
-            <option value="javascript">JavaScript</option>
-            <option value="css">CSS</option>
-            <option value="html">HTML</option>
-            <option value="jquery">jQuery</option>
+            <%
+                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
+                     Statement stmt = con.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT course_name FROM courses")) {
+                    while (rs.next()) {
+                        String courseName = rs.getString("course_name");
+            %>
+            <option value="<%=courseName.toLowerCase()%>"><%=courseName%></option>
+            <%
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            %>
         </select>
 
         <label for="note">Note:</label>

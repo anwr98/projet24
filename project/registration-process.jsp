@@ -7,6 +7,7 @@
     String phone = request.getParameter("phone");
     String password = request.getParameter("password");
     String course = request.getParameter("course");
+    String errorMessage = null;
 
     try {
         // Load the MySQL JDBC Driver
@@ -14,6 +15,27 @@
 
         // Establish a connection to the database
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a")) {
+
+            // Check if the phone number or email already exists
+            String checkSql = "SELECT phone, email FROM tutors WHERE phone = ? OR email = ?";
+            try (PreparedStatement checkStmt = con.prepareStatement(checkSql)) {
+                checkStmt.setString(1, phone);
+                checkStmt.setString(2, email);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (rs.next()) {
+                    // Either phone number or email already exists, return an error
+                    if (rs.getString("phone").equals(phone)) {
+                        errorMessage = "Phone number already registered. Please use a different phone number.";
+                    } else if (rs.getString("email").equals(email)) {
+                        errorMessage = "Email already registered. Please use a different email.";
+                    }
+                    request.setAttribute("errorMessage", errorMessage);
+                    request.getRequestDispatcher("create-registration.jsp").forward(request, response);
+                    return;
+                }
+            }
+
             // Prepare an SQL statement to insert the tutor's information into the database
             String sql = "INSERT INTO tutors (name, email, phone, password, course) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
