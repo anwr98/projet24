@@ -651,5 +651,43 @@ button:hover {
         color: red;
         text-align: center;
         margin-bottom: 20px;
-        }
-    
+}
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.card p {
+    margin: 10px 0;
+    color: #555;
+}
+
+.card form {
+    text-align: right;
+}
+
+.card button {
+    background-color: #ff4b5c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.card button:hover {
+    background-color: #ff1e2d;
+}
+
+      

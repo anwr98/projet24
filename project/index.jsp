@@ -71,7 +71,7 @@
 <!-- Contact Us Section -->
 <section id="contact">
     <h2>Contact Us</h2>
-    <form action="contact-process.jsp" method="post">
+    <form action="submit-contact.jsp" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
 
@@ -90,7 +90,7 @@
                     while (rs.next()) {
                         String courseName = rs.getString("course_name");
             %>
-            <option value="<%=courseName.toLowerCase()%>"><%=courseName%></option>
+            <option value="<%=courseName%>"><%=courseName%></option>
             <%
                     }
                 } catch (SQLException e) {
