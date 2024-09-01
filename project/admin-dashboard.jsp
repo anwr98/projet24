@@ -1,3 +1,4 @@
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +21,33 @@
     </header>
 
     <main>
-        <h1>Welcome, Admin</h1>
-        <p>This is the admin dashboard where you can manage courses.</p>
-        <a href="admin-add-course.jsp">Add New Course</a>
+        <h1>Manage Courses</h1>
+        <div class="course-list">
+            <%
+                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
+                     Statement stmt = con.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT id, course_name, image_path FROM courses")) {
+
+                    while (rs.next()) {
+                        int courseId = rs.getInt("id");
+                        String courseName = rs.getString("course_name");
+                        String imagePath = rs.getString("image_path");
+            %>
+            <div class="course-item">
+                <img src="<%=imagePath%>" alt="<%=courseName%>">
+                <p><%=courseName%></p>
+                <form action="delete-course.jsp" method="post" style="display:inline;">
+                    <input type="hidden" name="courseId" value="<%=courseId%>">
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete this course?');">Delete</button>
+                </form>
+            </div>
+            <%
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            %>
+        </div>
     </main>
 
     <footer>

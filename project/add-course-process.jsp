@@ -18,7 +18,6 @@
                 Scanner scanner = new Scanner(part.getInputStream(), "UTF-8");
                 courseName = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
                 scanner.close();
-                out.println("Course name retrieved: " + courseName + "<br>"); // Debugging output
 
             // Handle file uploads
             } else if (partName.equals("image")) {
@@ -37,10 +36,8 @@
                     }
 
                     imagePath = "images/" + fileName;
-                    out.println("File uploaded successfully: " + imagePath + "<br>"); // Debugging output
                 } catch (Exception e) {
                     e.printStackTrace();
-                    out.println("File upload failed: " + e.getMessage() + "<br>"); // Debugging output
                 }
             }
         }
@@ -54,18 +51,18 @@
             stmt.setString(1, courseName);
             stmt.setString(2, imagePath);
             int result = stmt.executeUpdate();
-            out.println("Database updated, rows affected: " + result + "<br>"); // Debugging output
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.println("Database update failed: " + e.getMessage() + "<br>"); // Debugging output
         }
+
+        // Redirect to the admin dashboard
+        response.sendRedirect("admin-dashboard.jsp");
+        return;  // Ensure the rest of the code doesn't execute
     } else {
         out.println("Course name or image path is null or empty, nothing to insert.<br>"); // Debugging output
     }
-
-    // Redirect or display a message
-    out.println("<a href='admin-dashboard.jsp'>Go back to dashboard</a>");
 %>
+
 
 

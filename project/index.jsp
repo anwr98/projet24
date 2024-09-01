@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*" %>
+<%@ page import="java.sql.*, java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +21,7 @@
                 <li><a href="index.jsp#about">About Us</a></li>
                 <li><a href="index.jsp#courses">Our Courses</a></li>
                 <li><a href="index.jsp#contact">Contact Us</a></li>
-                <li><a href="login.jsp">Login</a></li>
+                <li><a href="login.html">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -54,7 +54,7 @@
                     String imagePath = rs.getString("image_path");
         %>
         <div class="course-item">
-            <a href="<%=courseName.toLowerCase()%>-tutors.jsp">
+            <a href="tutors.jsp?course=<%=URLEncoder.encode(courseName, "UTF-8")%>">
                 <img src="<%=imagePath%>" alt="<%=courseName%>">
                 <p><%=courseName%></p>
             </a>

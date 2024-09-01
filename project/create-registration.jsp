@@ -20,7 +20,7 @@
                 <li><a href="index.jsp#about">About Us</a></li>
                 <li><a href="index.jsp#courses">Our Courses</a></li>
                 <li><a href="index.jsp#contact">Contact Us</a></li>
-                <li><a href="login.jsp">Login</a></li>
+                <li><a href="login.html">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -51,16 +51,41 @@
             
             <label for="course">Course to Teach:</label>
             <select id="course" name="course" required>
-                <option value="JavaScript">JavaScript</option>
-                <option value="CSS">CSS</option>
-                <option value="HTML">HTML</option>
-                <option value="jQuery">jQuery</option>
+                <%
+                    // Fetch courses from the database
+                    try {
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
+
+                        String sql = "SELECT course_name FROM courses";
+                        PreparedStatement stmt = con.prepareStatement(sql);
+                        ResultSet rs = stmt.executeQuery();
+
+                        while (rs.next()) {
+                            String courseName = rs.getString("course_name");
+                %>
+                            <option value="<%= courseName %>"><%= courseName %></option>
+                <%
+                        }
+
+                        rs.close();
+                        stmt.close();
+                        con.close();
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        out.println("SQL Error: " + e.getMessage());
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                        out.println("Error: MySQL Driver not found.");
+                    }
+                %>
             </select>
             
             <button type="submit">Register</button>
         </form>
 
-        <%-- Database interaction --%>
+        <%-- Database interaction for registration --%>
         <%
             String name = request.getParameter("name");
             String email = request.getParameter("email");
@@ -68,36 +93,38 @@
             String password = request.getParameter("password");
             String course = request.getParameter("course");
 
-            // Establishing the connection to the database
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
+            if (name != null && email != null && phone != null && password != null && course != null) {
+                // Establishing the connection to the database
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/coding_courses?enabledTLSProtocols=TLSv1.2", "root", "0503089535a");
 
-                String sql = "INSERT INTO tutors (name, email, phone, password, course, role) VALUES (?, ?, ?, ?, ?, 'tutor')";
-                PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setString(1, name);
-                stmt.setString(2, email);
-                stmt.setString(3, phone);
-                stmt.setString(4, password);
-                stmt.setString(5, course);
+                    String sql = "INSERT INTO tutors (name, email, phone, password, course, role) VALUES (?, ?, ?, ?, ?, 'tutor')";
+                    PreparedStatement stmt = con.prepareStatement(sql);
+                    stmt.setString(1, name);
+                    stmt.setString(2, email);
+                    stmt.setString(3, phone);
+                    stmt.setString(4, password);
+                    stmt.setString(5, course);
 
-                int rowsInserted = stmt.executeUpdate();
+                    int rowsInserted = stmt.executeUpdate();
 
-                if (rowsInserted > 0) {
-                    out.println("Registration successful!");
-                } else {
-                    out.println("Registration failed. Please try again.");
+                    if (rowsInserted > 0) {
+                        out.println("Registration successful!");
+                    } else {
+                        out.println("Registration failed. Please try again.");
+                    }
+
+                    stmt.close();
+                    con.close();
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    out.println("SQL Error: " + e.getMessage());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    out.println("Error: MySQL Driver not found.");
                 }
-
-                stmt.close();
-                con.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                out.println("SQL Error: " + e.getMessage());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                out.println("Error: MySQL Driver not found.");
             }
         %>
     </main>
